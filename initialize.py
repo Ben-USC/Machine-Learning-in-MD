@@ -1,41 +1,60 @@
 import numpy as np
 import random
-from load_file import *
 
 np.random.seed(16807)
 
-## define operations in hidden layers:
-def hiddenLayer(xin, w, b):
+## define sigmoid function
+def sigmoid(x):
+   return 1.0/(1.0+np.exp(-1.0*x))
+
+## define unary and binary operations:
+unary = [lambda x: x, np.sin, np.cos, sigmoid]
+binary = lambda x1, x2: x1 * x2
+
+## define nonlinear operations given z
+def nonlinear(z): ## dim(z) is 6 in the example
    global unary, binary
-   z = np.dot(w, xin) + b
-   yl = nonlinear(z)
+   xout = []
+   Nz = np.shape(z)[0]; Nu = 4; Nb = Nz - Nu
+   #Nu = int(0.4*Nz) ## 40% of z goes to unary operations
+   #if (Nz-Nu)%2 != 0: NU = NU-1; NB = Nz - NU
+   #NB = Nz - NU
+   for i in range(Nu):
+      xout.append(unary[i%4](z))
+   for i in range(Nu, Nz):
+      xout.append(binary(z[i], z[i+1]))
+      i += 1
+   return xout
 
-## compute psi(x)
-def psi(x):
-   global NL ## number of layers
-   global theta_w, theta_b ## free parameters
-   yl = hiddenLayer( x, theta_w[0], theta_b[0] )
-   for l in range(1,NL-1):
-      yl = hiddenLayer( yl, theta_w[0], theta_b[0] )
-   yl = np.dot(theta_w[l], theta_b[l])
+'''
+## ------------ read data file ---------
+f = open("./data.txt","r")
+temp = f.readlines()[0:]
+X = []
+for dat in temp:
+   tmp = np.asfarray(dat.strip("\n").split(), float)
+   X.append(tmp)
+X = np.asarray(X)
+## ----------------------------------
+'''
 
-
+NL = 2 ## number of layers in the training set
 kin, kout = 6, 5 ## input & output dimensions in each layer
 nout = 4 #dimension of final output
 
 ## initialize free parameters w and b
 theta_w = [] ## theta for w's
 theta_b = [] ## theta for b's
-theta_w.append( np.random.normal(0, 0.1, (kin, N)) )
-theta_b.append( np.zeros(kin) )
+theta_w.append( np.random.normal(0, 0.1, (kin, NL)) ) ## random number for w's
+theta_b.append( np.zeros(kin) ) ## 0 for all b's
 for i in range(1,NL-1):
    theta_w.append( np.random.normal(0, 0.1, (kin, kout)) )
    theta_b.append( np.zeros(kin) )
 theta_w.append( np.random.normal(0, 0.1, (nout, kout)) )
 theta_b.append( np.zeros(nout) )
 
-## test:
-for it in theta_w:
-   print(it)
-for it in theta_b:
-   print(it)
+## example training data
+X = np.random.normal(0,0.1, (10, 3))
+Y = np.random.normal(0,0.1, 10)
+N,D = np.shape(X)## size of training set
+
