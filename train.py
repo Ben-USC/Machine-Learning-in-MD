@@ -3,9 +3,9 @@ import random
 from initialize import *
 
 ## define operations in hidden layers:
-def hiddenLayer(xin, w, b):
+def hiddenLayer(x, w, b):
    global unary, binary
-   z = np.dot(w, xin) + b
+   z = np.dot(w, x) + b[:,None]
    yl = nonlinear(z)
 
 ## compute psi(x)
@@ -15,7 +15,10 @@ def psi(x):
    yl = hiddenLayer( x, theta_w[0], theta_b[0] ) ## first layer
    for l in range(1,NL-1):
       yl = hiddenLayer( yl, theta_w[l], theta_b[l] ) ## middle layers
-   yl = np.dot(theta_w[l], theta_b[l]) ## last layer
+   yl = np.dot(theta_w[l], yl) + b[:,None] ## last layer
+
+## compute gradient:
+L_b = psi(Xtrain) - 
 
 ## test:
 for it in theta_w:

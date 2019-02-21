@@ -37,24 +37,23 @@ for dat in temp:
 X = np.asarray(X)
 ## ----------------------------------
 '''
+##read training set:
+Xtrain = np.random.normal(0,0.1, (2, 10))
+Ytrain = np.random.normal(0,0.1, 10)
+D,N = np.shape(Xtrain)## size of training set
 
 NL = 2 ## number of layers in the training set
 kin, kout = 6, 5 ## input & output dimensions in each layer
-nout = 4 #dimension of final output
+nout = D #dimension of final output, equal to training set dimension in the example
 
 ## initialize free parameters w and b
 theta_w = [] ## theta for w's
 theta_b = [] ## theta for b's
-theta_w.append( np.random.normal(0, 0.1, (kin, NL)) ) ## random number for w's
+theta_w.append( np.random.normal(0, 0.1, (kin, D)) ) ## random number for w's
 theta_b.append( np.zeros(kin) ) ## 0 for all b's
 for i in range(1,NL-1):
    theta_w.append( np.random.normal(0, 0.1, (kin, kout)) )
    theta_b.append( np.zeros(kin) )
 theta_w.append( np.random.normal(0, 0.1, (nout, kout)) )
 theta_b.append( np.zeros(nout) )
-
-## example training data
-X = np.random.normal(0,0.1, (10, 3))
-Y = np.random.normal(0,0.1, 10)
-N,D = np.shape(X)## size of training set
 
